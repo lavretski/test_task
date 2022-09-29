@@ -18,16 +18,19 @@ SELECT * FROM consumption_info
 
 SELECT * FROM seller_info
 
+--1
 SELECT AVG(sums) FROM (
 SELECT SUM(fruit_weight) as sums FROM seller_info
 GROUP BY seller_id) as g_s
 
 
+--2.1
 SELECT COUNT(*) FROM (
 SELECT seller_id FROM consumption_info
 GROUP BY seller_id HAVING SUM(quantity_purchased_fruit) > 0
 ) as g
 
+--2.2
 SELECT COUNT(*) FROM (
 SELECT seller_id FROM consumption_info
 GROUP BY seller_id HAVING COUNT(seller_id) > 0
