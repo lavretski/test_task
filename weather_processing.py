@@ -41,7 +41,7 @@ data_fixed.dropna(inplace=True)
 #done in others
 
 # TODO Set the right dates as the index. Pay attention at the data type, it should be datetime64[ns]
-#done in others
+data_fixed.set_index('Yr_Mo_Dy', inplace=True)
 
 # TODO Compute how many values are missing for each location over the entire record
 print(data.isna().sum(axis=1))
@@ -58,28 +58,28 @@ print("non-missing values there are in total", (data.isna() == False).sum().sum(
 #data_fixed[data_fixed > 3 * data_fixed.std() + data_fixed.mean()] = np.nan
 #data_fixed.dropna(inplace=True)
 print("the mean windspeeds of the windspeeds over all the locations and all the times without a very windy day",
-      np.nanmean(data_fixed.loc[:, 'loc1':]))
+      np.nanmean(data_fixed))
 
 # TODO Create a DataFrame called loc_stats and calculate the min, max and mean windspeeds and standard deviations of the windspeeds at each location over all the days
 loc_stats = pd.DataFrame()
-df_speed = data_fixed.loc[:, 'loc1':]
-loc_stats['min'] = df_speed.min()
-loc_stats['max'] = df_speed.max()
-loc_stats['mean'] = df_speed.mean()
-loc_stats['std'] = df_speed.std()
+loc_stats['min'] = data_fixed.min()
+loc_stats['max'] = data_fixed.max()
+loc_stats['mean'] = data_fixed.mean()
+loc_stats['std'] = data_fixed.std()
 print(loc_stats)
 
 # TODO Find the average windspeed in January for each location
-data_fixed['Yr_Mo_Dy'] = pd.to_datetime(data_fixed['Yr_Mo_Dy'], errors='coerce')
-print("average windspeed in January for each location", data_fixed[data_fixed['Yr_Mo_Dy'].dt.month==1].mean())
+print("average windspeed in January for each location", data_fixed[data_fixed.index.to_series().dt.month==1].mean())
 
 # TODO Downsample the record to a yearly frequency for each location
-
+print(data_fixed.resample('AS-JAN').mean())
 
 # TODO Downsample the record to a monthly frequency for each location
-
+print(data_fixed.resample('M').mean())
 
 # TODO Downsample the record to a weekly frequency for each location
-
+print(data_fixed.resample('W-MON').mean())
 
 # TODO Calculate the min, max and mean windspeeds and standard deviations of the windspeeds across all locations for each week (assume that the first week starts on January 2 1961) for the first 21 weeks
+w = data_fixed.resample('W').agg(['min','max','mean','std'])
+print(w.loc[w.index[:23], :])
